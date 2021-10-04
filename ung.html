@@ -8,8 +8,8 @@
     border: 1px solid black;
     flex-grow: 1;
     height: 50vh;
-	    display:flex;
-
+    display:flex;
+	z-index: 5;
 
 }
 .key.sharp{
@@ -17,6 +17,7 @@
     background-color:black;
 	 height:40vh;
     margin:0 calc(0px - 5%);
+	z-index: 10;
 }
 .letter {
     font-weight: 800;
@@ -24,10 +25,17 @@
    margin: 10 Auto;
    font-size: 2rem;
 }
+
+.key.playing{
+	background-color: aqua;
+	color:black;
+}
 </style>
 
 <button id="ung" onclick="playSound(this)">Ung</button> 
 <input id="play-rate" type="range" value="1" min="1" max="13"/>
+
+
 <div class="piano-body">
 	<div class="key" note="a"><div class="letter">a</div></div>
 		<div class="key sharp" note="w"><div class="letter">w</div></div>
@@ -47,14 +55,12 @@
 
 
 <script>
-const fileName = "ung-Iain-cropped.mp3"; //"ungDaga-Ben-croppedMore.mp3"
+let fileName = "ung-Iain-cropped.mp3"; //"ungDaga-Ben-croppedMore.mp3"
 let soundPlayer = new Audio();
+	soundPlayer.src = fileName;
     soundPlayer.mozPreservesPitch = false;
     soundPlayer.preservesPitch = false;
 let semitoneRate = 	1.05946;
-
-
-
 
 //setup the soundbox
 let soundBox = {};
@@ -86,28 +92,36 @@ document.addEventListener("keyup",stopNote);
 
 let keys = document.querySelectorAll(".key");
 keys.forEach(key => key.addEventListener("click",event => {
-	let noteToPlay = event.target.getAttribute("note");
+	console.log(event);
+	let noteToPlay = event.target.getAttribute("note") || event.target.innerText;
 	let soundIndex = noteDict[noteToPlay];
 		soundBox[soundIndex].play();
 }));
 
+function updateFile(file){
+	soundPlayer.src = file;
+	Object.keys(soundBox).forEach(key => {
+		soundBox[key].src = file;
+	});
+}
+
 function playSound(e){
-    soundPlayer.src = fileName;
     soundPlayer.playbackRate = getRate();
+	soundPlayer.currentTime=0
     soundPlayer.play();
 }
+
 function getRate(){
 	let rateElement = document.getElementById("play-rate");
 	let rateNumber = 0.0+rateElement.value;
-	console.log(rateNumber);
 	let rate = semitoneRate**(rateNumber-1);
-	console.log(rate);
 	return rate;
 }
 
 
 function playNote(e){
 	let key = e.key;
+	highlight(key,true);
 	if(noteDict[key]){
 		let soundIndex = noteDict[key];
 		soundBox[soundIndex].play();
@@ -116,11 +130,21 @@ function playNote(e){
 
 function stopNote(e){
 	let key = e.key;
+	highlight(key,false);
 	if(noteDict[key]){
 		let soundIndex = noteDict[key];
 		soundBox[soundIndex].pause();
 		soundBox[soundIndex].currentTime=0;
 
+	}
+}
+
+function highlight(key, addHighlight){
+	let elements = document.querySelectorAll(`.key[note="${key}"`);
+	if(addHighlight){
+		elements.forEach(el => el.classList.add("playing"));
+	}else{
+		elements.forEach(el => el.classList.remove("playing"));
 	}
 }
 
