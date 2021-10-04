@@ -1,0 +1,127 @@
+<style>
+.piano-body {
+    display: flex;
+    width:100%;
+}
+
+.key{
+    border: 1px solid black;
+    flex-grow: 1;
+    height: 50vh;
+	    display:flex;
+
+
+}
+.key.sharp{
+    color:white;
+    background-color:black;
+	 height:40vh;
+    margin:0 calc(0px - 5%);
+}
+.letter {
+    font-weight: 800;
+   align-self: flex-end;
+   margin: 10 Auto;
+   font-size: 2rem;
+}
+</style>
+
+<button id="ung" onclick="playSound(this)">Ung</button> 
+<input id="play-rate" type="range" value="1" min="1" max="13"/>
+<div class="piano-body">
+	<div class="key" note="a"><div class="letter">a</div></div>
+		<div class="key sharp" note="w"><div class="letter">w</div></div>
+	<div class="key" note="s"><div class="letter">s</div></div>
+		<div class="key sharp" note="e"><div class="letter">e</div></div>
+	<div class="key" note="d"><div class="letter">d</div></div>
+	<div class="key" note="f"><div class="letter">f</div></div>
+		<div class="key sharp" note="t"><div class="letter">t</div></div>
+	<div class="key" note="g"><div class="letter">g</div></div>
+		<div class="key sharp" note="y"><div class="letter">y</div></div>
+	<div class="key" note="h"><div class="letter">h</div></div>
+		<div class="key sharp" note="u"><div class="letter">u</div></div>
+	<div class="key" note="j"><div class="letter">j</div></div>
+	<div class="key" note="k"><div class="letter">k</div></div>
+</div>
+
+
+
+<script>
+const fileName = "ung-Iain-cropped.mp3"; //"ungDaga-Ben-croppedMore.mp3"
+let soundPlayer = new Audio();
+    soundPlayer.mozPreservesPitch = false;
+    soundPlayer.preservesPitch = false;
+let semitoneRate = 	1.05946;
+
+
+
+
+//setup the soundbox
+let soundBox = {};
+for(let i = 1; i <= 13; i++){
+	soundBox[i] = new Audio();
+	soundBox[i].src = fileName;
+    soundBox[i].mozPreservesPitch = false;
+    soundBox[i].preservesPitch = false;
+	soundBox[i].playbackRate = semitoneRate**(i-1);
+}
+let noteDict = {
+a:1,
+w:2,
+s:3,
+e:4,
+d:5,
+f:6,
+t:7,
+g:8,
+y:9,
+h:10,
+u:11,
+j:12,
+k:13
+};
+
+document.addEventListener("keydown",playNote);
+document.addEventListener("keyup",stopNote);
+
+let keys = document.querySelectorAll(".key");
+keys.forEach(key => key.addEventListener("click",event => {
+	let noteToPlay = event.target.getAttribute("note");
+	let soundIndex = noteDict[noteToPlay];
+		soundBox[soundIndex].play();
+}));
+
+function playSound(e){
+    soundPlayer.src = fileName;
+    soundPlayer.playbackRate = getRate();
+    soundPlayer.play();
+}
+function getRate(){
+	let rateElement = document.getElementById("play-rate");
+	let rateNumber = 0.0+rateElement.value;
+	console.log(rateNumber);
+	let rate = semitoneRate**(rateNumber-1);
+	console.log(rate);
+	return rate;
+}
+
+
+function playNote(e){
+	let key = e.key;
+	if(noteDict[key]){
+		let soundIndex = noteDict[key];
+		soundBox[soundIndex].play();
+	}
+}
+
+function stopNote(e){
+	let key = e.key;
+	if(noteDict[key]){
+		let soundIndex = noteDict[key];
+		soundBox[soundIndex].pause();
+		soundBox[soundIndex].currentTime=0;
+
+	}
+}
+
+</script>
