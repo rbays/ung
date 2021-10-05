@@ -17,13 +17,13 @@
 		color:white;
 		background-color:black;
 		height:40vh;
-		margin:0 calc(0px - 5%);
+		margin:0 calc(0px - 2.25%);
 		z-index: 10;
 	}
 	.letter {
 		font-weight: 800;
 	align-self: flex-end;
-	margin: 10 Auto;
+	margin: 10px Auto;
 	font-size: 2rem;
 	}
 
@@ -61,7 +61,19 @@
 	<div class="key" note="h"><div class="letter">h</div></div>
 		<div class="key sharp" note="u"><div class="letter">u</div></div>
 	<div class="key" note="j"><div class="letter">j</div></div>
-	<div class="key" note="k"><div class="letter">k</div></div>
+	<div class="key" note="A"><div class="letter">A</div></div>
+		<div class="key sharp" note="W"><div class="letter">W</div></div>
+	<div class="key" note="S"><div class="letter">S</div></div>
+		<div class="key sharp" note="E"><div class="letter">E</div></div>
+	<div class="key" note="D"><div class="letter">D</div></div>
+	<div class="key" note="F"><div class="letter">F</div></div>
+		<div class="key sharp" note="T"><div class="letter">T</div></div>
+	<div class="key" note="G"><div class="letter">G</div></div>
+		<div class="key sharp" note="Y"><div class="letter">Y</div></div>
+	<div class="key" note="H"><div class="letter">H</div></div>
+		<div class="key sharp" note="U"><div class="letter">U</div></div>
+	<div class="key" note="J"><div class="letter">J</div></div>
+	<div class="key" note="K"><div class="letter">K</div></div>
 </div>
 
 
@@ -90,7 +102,7 @@ let soundBox = {};
 initSoundBox(fileName);
 
 function initSoundBox(file){
-	for(let i = 1; i <= 13; i++){
+	for(let i = 1; i <= 25; i++){
 		soundBox[i] = new Audio();
 		soundBox[i].src = file;
 		soundBox[i].mozPreservesPitch = false;
@@ -111,7 +123,19 @@ y:9,
 h:10,
 u:11,
 j:12,
-k:13
+A:13,
+W:14,
+S:15,
+E:16,
+D:17,
+F:18,
+T:19,
+G:20,
+Y:21,
+H:22,
+U:23,
+J:24,
+K:25
 };
 
 document.addEventListener("keydown",playNote);
