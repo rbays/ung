@@ -112,7 +112,6 @@ document.addEventListener("keyup",stopNote);
 
 let keys = document.querySelectorAll(".key");
 keys.forEach(key => key.addEventListener("click",event => {
-	console.log(event);
 	let noteToPlay = event.target.getAttribute("note") || event.target.innerText;
 	let soundIndex = noteDict[noteToPlay];
 		soundBox[soundIndex].play();
@@ -139,6 +138,16 @@ function getRate(){
 
 function playNote(e){
 	let key = e.key;
+	playLetter(key);
+
+}
+
+function stopNote(e){
+	let key = e.key;
+	stopLetter(key);
+}
+
+function playLetter(key){
 	highlight(key,true);
 	if(noteDict[key]){
 		let soundIndex = noteDict[key];
@@ -146,14 +155,12 @@ function playNote(e){
 	}
 }
 
-function stopNote(e){
-	let key = e.key;
+function stopLetter(key){
 	highlight(key,false);
 	if(noteDict[key]){
 		let soundIndex = noteDict[key];
 		soundBox[soundIndex].pause();
 		soundBox[soundIndex].currentTime=0;
-
 	}
 }
 
@@ -165,6 +172,28 @@ function highlight(key, addHighlight){
 		elements.forEach(el => el.classList.remove("playing"));
 	}
 }
+
+function playTune(melody,bpm){
+	let interval = 60000/bpm;
+	let lastNote = "x";
+	let playingInterval = setInterval(function(){
+		if(!melody.length){
+			clearInterval(playingInterval);
+			highlight(lastNote,false);
+			return;
+		}
+		let nextNote = melody[0];
+		melody = melody.substring(1);
+
+		if(noteDict[nextNote]){
+			stopLetter(lastNote);
+			playLetter(nextNote);
+			lastNote = nextNote;
+		}
+
+	},interval)
+
+} 
 
 </script>
 </body>
