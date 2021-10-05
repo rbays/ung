@@ -1,41 +1,45 @@
-<style>
-.piano-body {
-    display: flex;
-    width:100%;
-}
+<head>
+	<style>
+	.piano-body {
+		display: flex;
+		width:100%;
+	}
 
-.key{
-    border: 1px solid black;
-    flex-grow: 1;
-    height: 50vh;
-    display:flex;
-	z-index: 5;
+	.key{
+		border: 1px solid black;
+		flex-grow: 1;
+		height: 50vh;
+		display:flex;
+		z-index: 5;
 
-}
-.key.sharp{
-    color:white;
-    background-color:black;
-	 height:40vh;
-    margin:0 calc(0px - 5%);
-	z-index: 10;
-}
-.letter {
-    font-weight: 800;
-   align-self: flex-end;
-   margin: 10 Auto;
-   font-size: 2rem;
-}
+	}
+	.key.sharp{
+		color:white;
+		background-color:black;
+		height:40vh;
+		margin:0 calc(0px - 5%);
+		z-index: 10;
+	}
+	.letter {
+		font-weight: 800;
+	align-self: flex-end;
+	margin: 10 Auto;
+	font-size: 2rem;
+	}
 
-.key.playing{
-	background-color: aqua;
-	color:black;
-}
-</style>
-
+	.key.playing{
+		background-color: aqua;
+		color:black;
+	}
+	</style>
+</head>
+<body>
 <button id="ung" onclick="playSound(this)">Ung</button> 
 <input id="play-rate" type="range" value="1" min="1" max="13"/>
-
+<br/>
+<h5>Custom Ung?</h5>
 <input type="file" accept=".mp3" id="newSound"/>
+<br/>
 
 <div class="piano-body">
 	<div class="key" note="a"><div class="letter">a</div></div>
@@ -163,3 +167,4 @@ function highlight(key, addHighlight){
 }
 
 </script>
+</body>
