@@ -35,6 +35,7 @@
 <button id="ung" onclick="playSound(this)">Ung</button> 
 <input id="play-rate" type="range" value="1" min="1" max="13"/>
 
+<input type="file" accept=".mp3" id="newSound"/>
 
 <div class="piano-body">
 	<div class="key" note="a"><div class="letter">a</div></div>
@@ -62,14 +63,29 @@ let soundPlayer = new Audio();
     soundPlayer.preservesPitch = false;
 let semitoneRate = 	1.05946;
 
+const soundPicker = document.getElementById("newSound");
+soundPicker.addEventListener("change", updateSound, false);
+function updateSound() {
+	
+  const fileList = soundPicker.files; 
+	if(fileList[0]){
+		let url =  URL.createObjectURL(fileList[0]);
+		updateFile(url);
+	}
+}
+
 //setup the soundbox
 let soundBox = {};
-for(let i = 1; i <= 13; i++){
-	soundBox[i] = new Audio();
-	soundBox[i].src = fileName;
-    soundBox[i].mozPreservesPitch = false;
-    soundBox[i].preservesPitch = false;
-	soundBox[i].playbackRate = semitoneRate**(i-1);
+initSoundBox(fileName);
+
+function initSoundBox(file){
+	for(let i = 1; i <= 13; i++){
+		soundBox[i] = new Audio();
+		soundBox[i].src = file;
+		soundBox[i].mozPreservesPitch = false;
+		soundBox[i].preservesPitch = false;
+		soundBox[i].playbackRate = semitoneRate**(i-1);
+}
 }
 let noteDict = {
 a:1,
@@ -100,9 +116,7 @@ keys.forEach(key => key.addEventListener("click",event => {
 
 function updateFile(file){
 	soundPlayer.src = file;
-	Object.keys(soundBox).forEach(key => {
-		soundBox[key].src = file;
-	});
+	initSoundBox(file);
 }
 
 function playSound(e){
