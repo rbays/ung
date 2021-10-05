@@ -34,11 +34,15 @@
 	</style>
 </head>
 <body>
-<button id="ung" onclick="playSound(this)">Ung</button> 
+<button id="ung" onclick="playSound(0)">Ung</button> 
 <input id="play-rate" type="range" value="1" min="1" max="13"/>
 <br/>
 <h5>Custom Ung?</h5>
 <input type="file" accept=".mp3,.mpeg,.ogg" id="newSound"/>
+<label>Crop Start</label>
+<input id="file-crop" type="range" min="0" max="1" step="0.5" value="0"/>
+<label>Pitch Shift</label>
+<input id="pitch-shift" type="range" min="-20" max="20" step="0.5" value="0"/>
 <br/>
 <h5>Player Piano</h5>
 <label>melody</label>
@@ -88,8 +92,11 @@ let semitoneRate = 	1.05946;
 
 const soundPicker = document.getElementById("newSound");
 soundPicker.addEventListener("change", updateSound, false);
-function updateSound() {
-	
+
+const pitchShifter = document.getElementById("pitch-shift");
+pitchShifter.addEventListener("change",updateSoundPitch)
+
+function updateSound() {	
   const fileList = soundPicker.files; 
 	if(fileList[0]){
 		let url =  URL.createObjectURL(fileList[0]);
@@ -105,11 +112,20 @@ function initSoundBox(file){
 	for(let i = 1; i <= 25; i++){
 		soundBox[i] = new Audio();
 		soundBox[i].src = file;
+	}
+	updateSoundPitch();
+}
+
+function updateSoundPitch(){
+	let pitchShift = document.getElementById("pitch-shift").value;
+	for(let i = 1; i <= 25; i++){
 		soundBox[i].mozPreservesPitch = false;
 		soundBox[i].preservesPitch = false;
-		soundBox[i].playbackRate = semitoneRate**(i-1);
+		soundBox[i].playbackRate = semitoneRate**(i + +pitchShift - 1);
+	}
 }
-}
+
+
 let noteDict = {
 a:1,
 w:2,
@@ -153,9 +169,9 @@ function updateFile(file){
 	initSoundBox(file);
 }
 
-function playSound(e){
+function playSound(fromTime){
     soundPlayer.playbackRate = getRate();
-	soundPlayer.currentTime=0
+	soundPlayer.currentTime = fromTime || 0;
     soundPlayer.play();
 }
 
