@@ -34,13 +34,10 @@
 	</style>
 </head>
 <body>
-<button id="ung" onclick="playSound(0)">Ung</button> 
-<input id="play-rate" type="range" value="1" min="1" max="13"/>
-<br/>
 <h5>Custom Ung?</h5>
 <input type="file" accept=".mp3,.mpeg,.ogg" id="newSound"/>
 <label>Crop Start</label>
-<input id="file-crop" type="range" min="0" max="1" step="0.5" value="0"/>
+<input id="file-crop" type="range" min="0" max="1" step="0.05" value="0"/>
 <label>Pitch Shift</label>
 <input id="pitch-shift" type="range" min="-20" max="20" step="0.5" value="0"/>
 <br/>
@@ -84,11 +81,8 @@
 
 <script>
 let fileName = "ung-Iain-cropped.mp3"; //"ungDaga-Ben-croppedMore.mp3"
-let soundPlayer = new Audio();
-	soundPlayer.src = fileName;
-    soundPlayer.mozPreservesPitch = false;
-    soundPlayer.preservesPitch = false;
-let semitoneRate = 	1.05946;
+const semitoneRate = 	1.05946;
+const cropPicker = document.getElementById("file-crop");
 
 const soundPicker = document.getElementById("newSound");
 soundPicker.addEventListener("change", updateSound, false);
@@ -161,26 +155,14 @@ let keys = document.querySelectorAll(".key");
 keys.forEach(key => key.addEventListener("click",event => {
 	let noteToPlay = event.target.getAttribute("note") || event.target.innerText;
 	let soundIndex = noteDict[noteToPlay];
+		resetToCropStart(soundBox[soundIndex]);
 		soundBox[soundIndex].play();
 }));
 
 function updateFile(file){
-	soundPlayer.src = file;
 	initSoundBox(file);
 }
 
-function playSound(fromTime){
-    soundPlayer.playbackRate = getRate();
-	soundPlayer.currentTime = fromTime || 0;
-    soundPlayer.play();
-}
-
-function getRate(){
-	let rateElement = document.getElementById("play-rate");
-	let rateNumber = 0.0+rateElement.value;
-	let rate = semitoneRate**(rateNumber-1);
-	return rate;
-}
 
 
 function playNote(e){
@@ -198,7 +180,10 @@ function playLetter(key){
 	highlight(key,true);
 	if(noteDict[key]){
 		let soundIndex = noteDict[key];
-		soundBox[soundIndex].play();
+		if(	soundBox[soundIndex].paused){
+			resetToCropStart(soundBox[soundIndex]);
+			soundBox[soundIndex].play();
+		}
 	}
 }
 
@@ -207,7 +192,7 @@ function stopLetter(key){
 	if(noteDict[key]){
 		let soundIndex = noteDict[key];
 		soundBox[soundIndex].pause();
-		soundBox[soundIndex].currentTime=0;
+		resetToCropStart(soundBox[soundIndex]);
 	}
 }
 
@@ -249,6 +234,12 @@ function playerPlay(){
 	let bpm = document.getElementById("bpm").value;
 	playHarmony(melodies,bpm);
 } 
+
+function resetToCropStart(player){
+	let cropPercent = cropPicker.value;
+	let fileLen = player.duration;
+	player.currentTime = fileLen * cropPercent;
+}
 
 </script>
 </body>
