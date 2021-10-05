@@ -179,6 +179,9 @@ function highlight(key, addHighlight){
 		elements.forEach(el => el.classList.remove("playing"));
 	}
 }
+function playHarmony(melodies,bpm){
+	melodies.split(";").forEach(mel => playTune(mel,bpm));
+}
 
 function playTune(melody,bpm){
 	let interval = 60000/bpm;
@@ -202,9 +205,9 @@ function playTune(melody,bpm){
 } 
 
 function playerPlay(){
-	let melody = document.getElementById("melody").value;
+	let melodies = document.getElementById("melody").value;
 	let bpm = document.getElementById("bpm").value;
-	playTune(melody,bpm);
+	playHarmony(melodies,bpm);
 } 
 
 </script>
