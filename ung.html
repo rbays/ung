@@ -40,6 +40,13 @@
 <h5>Custom Ung?</h5>
 <input type="file" accept=".mp3" id="newSound"/>
 <br/>
+<h5>Player Piano</h5>
+<label>melody</label>
+<input type="text" id="melody" value="aagghhg-ffddssa"/>
+<label>bpm</label>
+<input type="number" id="bpm" value="120"/>
+<button id="playerButton" onclick="playerPlay()">Play!</button>
+<hr/>
 
 <div class="piano-body">
 	<div class="key" note="a"><div class="letter">a</div></div>
@@ -192,7 +199,12 @@ function playTune(melody,bpm){
 		}
 
 	},interval)
+} 
 
+function playerPlay(){
+	let melody = document.getElementById("melody").value;
+	let bpm = document.getElementById("bpm").value;
+	playTune(melody,bpm);
 } 
 
 </script>
