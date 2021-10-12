@@ -107,6 +107,8 @@ function initSoundBox(file){
 	for(let i = 1; i <= 25; i++){
 		
 			let soundI = new Audio();
+
+			//This is a horrid bodge from google, without it the Audios have a duration of infinity when loaded with a blob made from a local recording (: 
 			soundI.addEventListener('loadedmetadata', function () {
             if (soundI.duration == Infinity) {
                 soundI.currentTime = 1e101;
