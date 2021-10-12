@@ -35,6 +35,7 @@
 </head>
 <body>
 <h5>Custom Ung?</h5>
+<button id="recorder">Record Ung (3s)</button>
 <input type="file" accept=".mp3,.mpeg,.ogg" id="newSound"/>
 <label>Crop Start</label>
 <input id="file-crop" type="range" min="0" max="1" step="0.05" value="0"/>
@@ -104,9 +105,25 @@ initSoundBox(fileName);
 
 function initSoundBox(file){
 	for(let i = 1; i <= 25; i++){
-		soundBox[i] = new Audio();
-		soundBox[i].src = file;
+		
+			let soundI = new Audio();
+			soundI.addEventListener('loadedmetadata', function () {
+            if (soundI.duration == Infinity) {
+                soundI.currentTime = 1e101;
+                soundI.ontimeupdate = function () {
+                    this.ontimeupdate = () => {
+                        return;
+                    }
+                    soundI.currentTime = 0;
+                    return;
+                }
+            }});
+		
+			soundI.src = file;
+			soundBox[i] = soundI;
+				
 	}
+	
 	updateSoundPitch();
 }
 
@@ -240,6 +257,38 @@ function resetToCropStart(player){
 	let fileLen = player.duration;
 	player.currentTime = fileLen * cropPercent;
 }
+
+
+//Recording
+document.getElementById("recorder").addEventListener('click',function(){startRecording()});
+let audioBlob;
+function startRecording(){
+
+	navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+	    const options = {mimeType: 'audio/webm'};
+
+		const mediaRecorder = new MediaRecorder(stream,options);
+		const audioChunks = [];
+	mediaRecorder.addEventListener("dataavailable", function(event){
+        audioChunks.push(event.data);
+    });
+	mediaRecorder.addEventListener("stop", () => {
+              audioBlob = new Blob(audioChunks);
+              const audioUrl = URL.createObjectURL(audioBlob);
+			  updateFile(audioUrl);
+			  let aaa = new Audio(audioUrl);
+			  aaa.play();
+			}
+	)
+
+	mediaRecorder.start();
+	setTimeout(() => {
+		mediaRecorder.stop();
+	}, 3000);
+	}
+)	
+}
+
 
 </script>
 </body>
